@@ -11,4 +11,4 @@ Currently, few functions are available:
 - completely mobile and desktop responsive
 - it will save data on local storage
 - tech use: react js, tailwind, vite
-- Live link :
+- Live link :https://qtectodobyabir.netlify.app/
