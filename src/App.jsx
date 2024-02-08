@@ -48,25 +48,34 @@ const App = () => {
     setTasks(updatedTasks);
     setEditingTaskId(null);
   };
+
+  const handleDeleteTask = (id) => {
+    const filteredTasks = tasks.filter((task) => task.id !== id);
+    setTasks(filteredTasks);
+    setTotalTasks(totalTasks - 1);
+    if (filteredTasks.find((task) => task.status === "completed")) {
+      setCompletedTasks(completedTasks - 1);
+    }
+  };
   return (
     <div>
-      <div className="App min-h-screen bg-gray-100 flex flex-col justify-center items-center">
+      <div className=" min-h-screen bg-gray-100 flex flex-col justify-center items-center ">
         <h1 className="text-5xl font-bold mb-4">Todo List</h1>
 
-        <div className="bg-white p-4 rounded-lg shadow-md w-full max-w-md">
+        <div className="bg-white p-4 rounded-lg shadow-md w-full max-w-xl">
           <p className="mb-2">Enter your task:</p>
-          <div className="flex items-center mb-4">
+          <div className="flex md:flex-row flex-col  md:items-center mb-4">
             <input
               type="text"
               placeholder="Enter task"
               value={newtaskTitle}
               onChange={(e) => setNewTaskTitle(e.target.value)}
-              className="mr-2 py-1 px-2 border border-gray-300 rounded-md flex-grow"
+              className="md:mr-2 py-1 px-2 border border-gray-300 rounded-md flex-grow mb-3 md:mb-0"
             />
             <select
               value={newTaskPriority}
               onChange={(e) => setNewTaskPriority(e.target.value)}
-              className="py-1 px-2 border border-gray-300 rounded-md"
+              className="py-1 px-2 border border-gray-300 rounded-md mb-3 md:mb-0"
             >
               {Object.keys(priorities).map((priority) => (
                 <option key={priority} value={priority}>
@@ -76,7 +85,7 @@ const App = () => {
             </select>
             <button
               onClick={handleAddedTask}
-              className="bg-blue-500 text-white py-1 px-4 rounded-md ml-2 hover:bg-blue-600"
+              className="bg-blue-500 text-white py-1 px-4 rounded-md md:ml-2 hover:bg-blue-600"
             >
               Add Task
             </button>
@@ -85,22 +94,22 @@ const App = () => {
           <p>Completed Tasks: {completedTasks}</p>
         </div>
 
-        <ul className="mt-4 w-full max-w-md">
+        <ul className="mt-4 w-full  max-w-xl">
           {tasks.map((task) => (
             <li
               key={task.id}
-              className="bg-white p-4 rounded-md shadow-md mb-2 flex justify-between items-center"
+              className="bg-white m-3 p-4 rounded-md shadow-md mb-2 flex md:flex-row flex-col justify-between items-center"
             >
               {editingTaskId === task.id ? (
                 <input
                   type="text"
                   value={editedTaskTitle}
                   onChange={(e) => setEditedTaskTitle(e.target.value)}
-                  className="mr-2 py-1 px-2 border border-gray-300 rounded-md flex-grow"
+                  className="mr-2 py-1 px-2 border border-gray-300 rounded-md flex-grow  mb-3 md:mb-0 "
                 />
               ) : (
                 <span
-                  className="flex-grow font-bold "
+                  className="flex-grow font-bold mb-3 md:mb-0"
                   style={{
                     color: priorities[task.priority].color,
                     textDecoration:
@@ -114,20 +123,20 @@ const App = () => {
                 {editingTaskId === task.id ? (
                   <button
                     onClick={() => handleEditTask(task.id)}
-                    className="bg-blue-600 text-white py-1 px-4 rounded-md mr-2 hover:bg-blue-700"
+                    className="bg-blue-600 text-white py-1 px-4 rounded-md mr-2 hover:bg-blue-700 mb-3 md:mb-0"
                   >
                     Save
                   </button>
                 ) : (
                   <button
                     onClick={() => handleEditClick(task.id, task.title)}
-                    className="bg-blue-600 text-white py-1 px-4 rounded-md mr-2 hover:bg-blue-700"
+                    className="bg-blue-600 text-white py-1 px-4 rounded-md mr-2 hover:bg-blue-700 mb-3 md:mb-0"
                   >
                     Edit
                   </button>
                 )}
                 <button
-                  className={`py-1 px-4 rounded-md mr-2 ${
+                  className={`py-1 px-4 rounded-md mr-2 mb-3 md:mb-0 ${
                     task.status === "completed"
                       ? "bg-green-600 text-white hover:bg-green-700"
                       : "bg-orange-600 text-white hover:bg-orange-700"
@@ -135,7 +144,10 @@ const App = () => {
                 >
                   {task.status === "completed" ? "Completed" : "Incomplete"}
                 </button>
-                <button className="bg-red-600 text-white py-1 px-4 rounded-md hover:bg-red-700">
+                <button
+                  className="bg-red-600 text-white py-1 px-4 rounded-md mr-2 hover:bg-red-700 mb-3 md:mb-0"
+                  onClick={() => handleDeleteTask(task.id)}
+                >
                   Delete
                 </button>
               </div>
