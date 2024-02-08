@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const GivenTasks = [
   { id: 1, title: "cricket", status: "incomplete", priority: "low" },
@@ -7,7 +7,7 @@ const GivenTasks = [
 ];
 const priorities = {
   low: { color: "red", label: "Low" },
-  medium: { color: "yellow", label: "Medium" },
+  medium: { color: "orange", label: "Medium" },
   high: { color: "green", label: "High" },
 };
 
@@ -57,13 +57,43 @@ const App = () => {
       setCompletedTasks(completedTasks - 1);
     }
   };
+
+  const makeIncompleteOrComplete = (id) => {
+    const Update = tasks.map((task) =>
+      task.id === id
+        ? {
+            ...task,
+            status: task.status === "incomplete" ? "completed" : "incomplete",
+          }
+        : task
+    );
+    setTasks(Update);
+    setCompletedTasks(
+      Update.filter((task) => task.status === "completed").length
+    );
+  };
+
+  useEffect(() => {
+    const store = JSON.parse(localStorage.getItem("tasks"));
+    if (store) {
+      setTasks(store);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
   return (
     <div>
       <div className=" min-h-screen bg-gray-100 flex flex-col justify-center items-center ">
-        <h1 className="text-5xl font-bold mb-4">Todo List</h1>
+        <h1 className="text-2xl md:text-4xl font-bold mb-4">
+          Qtec career Todo List
+        </h1>
 
         <div className="bg-white p-4 rounded-lg shadow-md w-full max-w-xl">
-          <p className="mb-2">Enter your task:</p>
+          <p className="mb-2 text-blue-500 font-medium text-xl">
+            Enter your task:
+          </p>
           <div className="flex md:flex-row flex-col  md:items-center mb-4">
             <input
               type="text"
@@ -90,8 +120,12 @@ const App = () => {
               Add Task
             </button>
           </div>
-          <p className="mb-2">Total Tasks: {totalTasks}</p>
-          <p>Completed Tasks: {completedTasks}</p>
+          <p className="mb-2 text-blue-500 font-medium text-xl">
+            Total Tasks: {totalTasks}
+          </p>
+          <p className="text-green-500 font-medium text-xl">
+            Completed Tasks: {completedTasks}
+          </p>
         </div>
 
         <ul className="mt-4 w-full  max-w-xl">
@@ -136,6 +170,7 @@ const App = () => {
                   </button>
                 )}
                 <button
+                  onClick={() => makeIncompleteOrComplete(task.id)}
                   className={`py-1 px-4 rounded-md mr-2 mb-3 md:mb-0 ${
                     task.status === "completed"
                       ? "bg-green-600 text-white hover:bg-green-700"
