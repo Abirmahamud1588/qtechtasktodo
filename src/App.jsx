@@ -16,6 +16,9 @@ const App = () => {
   const [totalTasks, setTotalTasks] = useState(GivenTasks.length);
   const [newtaskTitle, setNewTaskTitle] = useState("");
   const [newTaskPriority, setNewTaskPriority] = useState("low");
+
+  const [editingTaskId, setEditingTaskId] = useState(null);
+  const [editedTaskTitle, setEditedTaskTitle] = useState("");
   const [completedTasks, setCompletedTasks] = useState(
     GivenTasks.filter((task) => task.status === "completed").length
   );
@@ -31,6 +34,19 @@ const App = () => {
       setNewTaskTitle("");
       setTotalTasks(totalTasks + 1);
     }
+  };
+
+  const handleEditClick = (id, title) => {
+    setEditingTaskId(id);
+    setEditedTaskTitle(title);
+  };
+
+  const handleEditTask = (id) => {
+    const updatedTasks = tasks.map((task) =>
+      task.id === id ? { ...task, title: editedTaskTitle } : task
+    );
+    setTasks(updatedTasks);
+    setEditingTaskId(null);
   };
   return (
     <div>
@@ -68,6 +84,64 @@ const App = () => {
           <p className="mb-2">Total Tasks: {totalTasks}</p>
           <p>Completed Tasks: {completedTasks}</p>
         </div>
+
+        <ul className="mt-4 w-full max-w-md">
+          {tasks.map((task) => (
+            <li
+              key={task.id}
+              className="bg-white p-4 rounded-md shadow-md mb-2 flex justify-between items-center"
+            >
+              {editingTaskId === task.id ? (
+                <input
+                  type="text"
+                  value={editedTaskTitle}
+                  onChange={(e) => setEditedTaskTitle(e.target.value)}
+                  className="mr-2 py-1 px-2 border border-gray-300 rounded-md flex-grow"
+                />
+              ) : (
+                <span
+                  className="flex-grow font-bold "
+                  style={{
+                    color: priorities[task.priority].color,
+                    textDecoration:
+                      task.status === "completed" ? "line-through" : "none",
+                  }}
+                >
+                  {task.title}
+                </span>
+              )}
+              <div>
+                {editingTaskId === task.id ? (
+                  <button
+                    onClick={() => handleEditTask(task.id)}
+                    className="bg-blue-600 text-white py-1 px-4 rounded-md mr-2 hover:bg-blue-700"
+                  >
+                    Save
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleEditClick(task.id, task.title)}
+                    className="bg-blue-600 text-white py-1 px-4 rounded-md mr-2 hover:bg-blue-700"
+                  >
+                    Edit
+                  </button>
+                )}
+                <button
+                  className={`py-1 px-4 rounded-md mr-2 ${
+                    task.status === "completed"
+                      ? "bg-green-600 text-white hover:bg-green-700"
+                      : "bg-orange-600 text-white hover:bg-orange-700"
+                  }`}
+                >
+                  {task.status === "completed" ? "Completed" : "Incomplete"}
+                </button>
+                <button className="bg-red-600 text-white py-1 px-4 rounded-md hover:bg-red-700">
+                  Delete
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
